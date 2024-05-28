@@ -3,10 +3,12 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UsersModule } from './users/users.module';
 import { LoggerMiddleware } from './middleware/logger.middleware';
+import { PrismaModule } from './db/prisma.module';
+import { GamesModule } from './games/games.module';
 
 
 @Module({
-  imports: [UsersModule],
+  imports: [UsersModule, PrismaModule, GamesModule],
   controllers: [AppController],
   providers: [AppService],
   exports: []

@@ -1,14 +1,13 @@
 import { IsNotEmpty, IsString } from "class-validator";
 
-export class CreateUserDTO {
+export class CreateGameDTO {
     @IsString()
     @IsNotEmpty()
     name: string;
     @IsString()
     @IsNotEmpty()
-    email: string;
+    description: string;
     @IsString()
     @IsNotEmpty()
-    password: string;
-
+    image: string;  
 }

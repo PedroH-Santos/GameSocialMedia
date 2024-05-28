@@ -1,6 +1,7 @@
-import { Body, Controller, Delete, Get, Header, HttpCode, Param, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Header, HttpCode, Param, ParseIntPipe, Post, Put, ValidationPipe } from '@nestjs/common';
 import { CreateUserDTO } from './dto/create-user.dto';
 import { UsersService } from './users.service';
+import { Users } from '@prisma/client';
 
 @Controller('users')
 export class UsersController {
@@ -8,35 +9,38 @@ export class UsersController {
     constructor(private userService: UsersService) {}
 
     @Get()
-    getUsers(): any {
-        return this.userService.findAll();
+    async getUsers(): Promise<Users[]> {
+      return await this.userService.findAll();
 
     }
 
     @Post()
     @HttpCode(201)
     @Header('Content-Type','application/json')
-    createUser(@Body() createUser: CreateUserDTO): any {
-        this.userService.create(createUser);
-        return "Objeto criado";
+    async createUser(@Body(new ValidationPipe()) createUser: CreateUserDTO): Promise<CreateUserDTO> {
+        return await this.userService.create(createUser);
+        
     }
 
+    
 
     @Get(':id')
-    getUser(): any {
-
+    async getUser(@Param('id', ParseIntPipe) id: number): Promise<Users> {
+        return await this.userService.findOne(id);
     }
 
 
     @Put(':id')
-    updateUser(@Param() id: number, @Body() createUser: CreateUserDTO): any {
-        console.log(createUser);
-        return createUser;
+    async updateUser(@Param('id', ParseIntPipe) id: number, @Body(new ValidationPipe()) createUser: CreateUserDTO): Promise<Users> {
+       
+        return await this.userService.update(id, createUser);
     }
 
 
     @Delete(':id')
-    deleteUser(): any {
-
+    async deleteUser(@Param('id', ParseIntPipe) id: number): Promise<Users> {
+        return await this.userService.delete(id);
     }
+
+
 }
