@@ -2,6 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { PrismaService } from "src/db/prisma.service";
 import { CreateUserDTO } from "./dto/create-user.dto";
 import { Users } from "@prisma/client";
+import { UserJoinRoomDTO } from "./dto/user-join-room.dto";
 
 
 @Injectable()
@@ -52,5 +53,16 @@ export class UsersRepository {
                 id: id
             }
         });
+    }
+
+    async joinUserInRoom(data: UserJoinRoomDTO) {
+        return await this.prismaService.users.update({
+            data: {
+                roomId: data.roomId
+            },
+            where: {
+                id: data.userId
+            }
+        })
     }
 }

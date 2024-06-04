@@ -23,12 +23,15 @@ enum UserRelationGameStatus {
 }
 
 model Users {
-  id                Int                 @id @default(autoincrement())
-  name              String
-  email             String              @unique
-  password          String
-  games             Games[]
-  GamesListedByUser GamesListedByUser[]
+  id                 Int                 @id @default(autoincrement())
+  name               String
+  email              String              @unique
+  password           String
+  games              GamesListedByUser[]
+  currentCreatedRoom Room?               @relation("creatorRoom")
+  currentRoom        Room?                @relation(name: "participantRoom", fields: [roomId], references: [id])
+  roomId             Int?             
+  createdAt    DateTime @default(now())
 }
 
 model Games {
@@ -36,8 +39,9 @@ model Games {
   name              String
   image             String
   description       String
-  users             Users[]
-  GamesListedByUser GamesListedByUser[]
+  users             GamesListedByUser[] 
+  rooms             Room[]            @relation("gameRoom")
+  createdAt    DateTime @default(now())
 }
 
 model GamesListedByUser {
@@ -49,4 +53,16 @@ model GamesListedByUser {
   createdAt DateTime               @default(now())
 
   @@id([userId, gameId])
+}
+
+model Room {
+  id           Int      @id @default(autoincrement())
+  name         String
+  code         String   @unique
+  creator      Users    @relation(name: "creatorRoom", fields: [creatorId], references: [id])
+  creatorId    Int      @unique
+  participants Users[]  @relation("participantRoom")
+  game         Games    @relation("gameRoom", fields: [gameId], references: [id])
+  gameId       Int    
+  createdAt    DateTime @default(now())
 }

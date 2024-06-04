@@ -2,6 +2,7 @@ import { Body, Controller, Delete, Get, Header, HttpCode, Param, ParseIntPipe, P
 import { CreateUserDTO } from './dto/create-user.dto';
 import { UsersService } from './users.service';
 import { Users } from '@prisma/client';
+import { UserJoinRoomDTO } from './dto/user-join-room.dto';
 
 @Controller('users')
 export class UsersController {
@@ -42,5 +43,15 @@ export class UsersController {
         return await this.userService.delete(id);
     }
 
+    @Post('joinRoom')
+    async joinUserInRoom(@Body() data: UserJoinRoomDTO) {
+        const user = await this.userService.joinUserInRoom(data);
+        return {
+            message: "User join in the room",
+            user
+
+        }
+ 
+    }
 
 }
